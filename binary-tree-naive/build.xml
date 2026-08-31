@@ -1,0 +1,17 @@
+<project>
+
+  <target name="compile">
+    <mkdir dir="classes"/>
+
+    <javac srcdir="src"
+	   destdir="classes"
+	   includeantruntime="false"/>
+  </target>
+  
+  <target name="run" depends="compile">
+    <java classname="sicht.baum.binaernaiv.Main"
+	  classpath="classes"
+	  fork="true"></java>
+  </target>
+  
+</project>
