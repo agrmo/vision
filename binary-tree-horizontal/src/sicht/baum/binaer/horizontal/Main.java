@@ -1,15 +1,15 @@
-package sicht.baum.binaer;
+package sicht.baum.binaer.horizontal;
 
-import java.awt.Color;
-import paar.Paar;
+import welt.baum.binaer.horizontal.Binaerbaumwelthorizontal;
 import baum.binaer.Binaerbaum;
+import java.awt.Color;
 import java.util.ArrayList;
 import javax.swing.JFrame;
-import welt.baum.binaer.Binaerbaumwelt;
-import sicht.Sicht;
 import maler.Maler;
+import sicht.Sicht;
+import vektor.Zweivektor;
 
-// java -cp classes sicht.baum.binaer.Main
+// java -cp classes sicht.baum.binaer.horizontal.Main
 
 public class Main {
     static void beispieleins() {
@@ -27,10 +27,10 @@ public class Main {
 	double d = 30;
 	int ux = 100;
 	int uy = 100;
-	Binaerbaumwelt bw = new Binaerbaumwelt(baum,
-					       ux, uy,
-					       dx, dy);
-	Binaerbaumsicht s = new Binaerbaumsicht(bw, d);
+	Binaerbaumwelthorizontal bw = new Binaerbaumwelthorizontal(baum,
+								   ux, uy,
+								   dx, dy);
+	Binaerbaumsichthorizontal s = new Binaerbaumsichthorizontal(bw, d);
 
 	Maler m = new Maler(new Sicht[] {s});
 	JFrame frame = new JFrame();
@@ -65,10 +65,11 @@ public class Main {
 	double d = 30;
 	int ux = 200;
 	int uy = 100;
-	Binaerbaumwelt bw = new Binaerbaumwelt(baum,
-					       ux, uy,
-					       dx, dy);
-	Binaerbaumsicht s = new Binaerbaumsicht(bw, d);
+	Binaerbaumwelthorizontal bw = new Binaerbaumwelthorizontal(baum,
+								   ux, uy,
+								   dx, dy);
+	
+	Binaerbaumsichthorizontal s = new Binaerbaumsichthorizontal(bw, d);
 
 	Maler m = new Maler(new Sicht[] {s});
 	JFrame frame = new JFrame();

@@ -13,8 +13,6 @@ package vektor;
 
   Der zweidimensionale Vektor und der zweidimensionale Vektor besitzen
   verschiedenen Ursprung.
-
-  Zum Beispiel die Ecke enthält Dreivektoren, um ihre Strecke zu zeigen.
  */
 public class Zweivektor {
     public double eins;

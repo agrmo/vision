@@ -1,12 +1,11 @@
-package ort.baum.binaer;
+package welt.baum.binaer.horizontal;
 
-import paar.Paar;
 import baum.binaer.Binaerbaum;
+import baum.binaer.Binaerbaumgroesse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import druck.paar.Paardrucker;
-import baum.binaer.Binaerbaumgroesse;
+import vektor.Zweivektor;
 
 // Berechene alle Orte dieses Baumes.  Ein Rechner, der durch einem
 // Baum geht, und berechnet die Stelle jedes Knotens.
@@ -120,7 +119,7 @@ import baum.binaer.Binaerbaumgroesse;
 // - elter: Eine Abbildung von Knoten bis Knoten
 // - ort: Eine Abbildung von Knoten bis Ort.
 
-public class Binaerbaumort {
+public class Binaerbaumorthorizontal {
 
     Binaerbaum baumursprung;
 
@@ -128,9 +127,9 @@ public class Binaerbaumort {
     public HashMap<Integer,HashMap<Integer,Integer>> ort;
     
     // Wert -> Ort
-    public HashMap<Integer,Paar> wer;
+    public HashMap<Integer,Zweivektor> wer;
 
-    public Binaerbaumort(Binaerbaum bu) {
+    public Binaerbaumorthorizontal(Binaerbaum bu) {
 
 	// Fangen wir mit dem ursprünglichen Baum und dem
 	// ursprünglichem Ort an.
@@ -138,7 +137,7 @@ public class Binaerbaumort {
 
 	// Am Anfang kennen wir nun den Ort des Ursprungs.
 	this.ort = new HashMap<Integer,HashMap<Integer,Integer>>();
-	this.wer = new HashMap<Integer,Paar>();
+	this.wer = new HashMap<Integer,Zweivektor>();
 	
 	this.fuege(0, 0, bu.wert);
 
@@ -156,7 +155,7 @@ public class Binaerbaumort {
 	}
 
 	this.ort.get(x).put(y, w);
-	this.wer.put(w, new Paar(x,y));
+	this.wer.put(w, new Zweivektor(x,y));
     }
 
     // Ist der Ort [x,y] besetzt?
@@ -268,18 +267,32 @@ public class Binaerbaumort {
     }
 
     // Nehme eine Liste von allen Orten, die berechnet wurden.
-    public Paar[] nehmeorte() {
+    public Zweivektor[] nehmeorte() {
 	
 	int groesse = Binaerbaumgroesse.groesse(this.baumursprung);
-	Paar[] orte = new Paar[groesse];
+	Zweivektor[] orte = new Zweivektor[groesse];
 
 	int i = 0;
 	for (int wert : this.wer.keySet()) {
-	    Paar ort = this.wer.get(wert);
+	    Zweivektor ort = this.wer.get(wert);
 	    orte[i] = ort;
 	    i += 1;
 	}
 
     	return orte;
+    }
+
+    // Nehme ein String dieser Datenstruktur.
+    // Soll in druck/ sein...
+    public String drucke() {
+	StringBuilder sb = new StringBuilder();
+
+	for (int key : this.wer.keySet()) {
+	    Zweivektor ort = this.wer.get(key);
+	    sb.append(key + ": [" + ort.eins + ", " + ort.zwei + "]");
+	    sb.append("\n");
+	}
+
+	return sb.toString();
     }
 }
