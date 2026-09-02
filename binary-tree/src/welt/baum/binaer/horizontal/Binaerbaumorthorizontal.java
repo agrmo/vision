@@ -1,14 +1,19 @@
 package welt.baum.binaer.horizontal;
 
 import baum.binaer.Binaerbaum;
+import baum.binaer.Binaerbaumelter;
 import baum.binaer.Binaerbaumgroesse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import vektor.Zweivektor;
+import java.util.HashMap;
+import java.util.Set;
 
 // Berechene alle Orte dieses Baumes.  Ein Rechner, der durch einem
 // Baum geht, und berechnet die Stelle jedes Knotens.
+//
+// Idee
 //
 // Der Ort eines Knotens ist vielleicht
 //                              
@@ -16,7 +21,6 @@ import vektor.Zweivektor;
 //
 // Was sind die Orte seiner Kinder?
 //
-// Idee
 //                              o
 //                             / \
 // links = (x - dx, y + dy)   /   \  rechts = (x + dx, y + dy)
@@ -118,12 +122,75 @@ import vektor.Zweivektor;
 // Diese zwei Funktionen brauchen zwei Datenstrukturen:
 // - elter: Eine Abbildung von Knoten bis Knoten
 // - ort: Eine Abbildung von Knoten bis Ort.
+//
+// Problem
+//
+// Zwei Knoten stehen dicht nebeneinander. Ein wollt das Kind A nach
+// rechts machen, aber ein Knoten steht nicht nur dort, sodern auch
+// direkt darunter.
+// 
+//                        o o
+//                       / / \
+//                      o B A o
+//
+// Idee
+//
+// Verschiebe B in der Richtung, die wir das neues Kind machen. In
+// diesem Fall nach rechts.
+//
+// Problem
+//                         A B
+//                          /
+//                         C
+//
+// A will ein Kind nach links machen. C steht darunter. Hätte A C in
+// der Richtung des neuen Kindes verschoben, dann wird es noch eine
+// Überschneidung geben.
+//
+// Idee
+//
+// Mache die Funktion istueberschneidetrechts(Knoten A, Knoten C).
+//
+// Hat der Knoten C eine mögliche Überschneidung mit Knoten A nach rechts?
+// boolean istueberschneidetrechts(Knoten A, Knoten C)
+//
+// Hat der Knoten C eine mögliche Überschneidung mit Knoten A nach linkss?
+// boolean istueberschneidetlinkss(Knoten A, Knoten C)
+//
+// if (Es gibt ein Knoten darunter und derselbe Knoten ist eine
+// mögliche Überschneidung nach rechts) { verschiebe ihn rechts }
+//
+// if (Es gibt ein Knoten darunter und derselbe Knoten ist eine
+// mögliche Überschneidung nach links) { verschiebe ihn links }
+//
+// Also mit dieser Funktion wird A nicht C nach links verschieben. Gut.
+//
+// Problem
+//
+// Es gebt mehr Knoten als A und C, die übereinander überschneiden können.
+//
 
 public class Binaerbaumorthorizontal {
 
+    // Baum:
+    // - wert
+    // - links
+    // - rechts
     Binaerbaum baumursprung;
 
+    // Wert -> Wert
+    HashMap<Integer,Integer> elter;
+
     // Ort -> Wert
+    // .get(x).get(y)
+    // oder
+    // .get(y).get(x)?
+    // Ein gutes Antwort:
+    // Der Baum wird in der +y Richtung gebaut.
+    // Fangen mit der Zeile y=0 an.
+    // Also .get(y).get(x) ist besser.
+    // Auch wir brauchen die Liste von allen Knoten
+    // auf einer bestimmten Zeile y.
     public HashMap<Integer,HashMap<Integer,Integer>> ort;
     
     // Wert -> Ort
@@ -134,6 +201,10 @@ public class Binaerbaumorthorizontal {
 	// Fangen wir mit dem ursprünglichen Baum und dem
 	// ursprünglichem Ort an.
 	this.baumursprung = bu;
+
+	// Der ganze Baum ist gebaut, und wir brauchen (leider) eine
+	// Abbildung für die Eltern.
+	this.elter = Binaerbaumelter.elter(bu);
 
 	// Am Anfang kennen wir nun den Ort des Ursprungs.
 	this.ort = new HashMap<Integer,HashMap<Integer,Integer>>();
@@ -150,37 +221,32 @@ public class Binaerbaumorthorizontal {
 
     // Fuege einen Knoten am Ort.
     void fuege(int x, int y, int w) {
-	if (!this.ort.containsKey(x)) {
-	    this.ort.put(x, new HashMap<Integer,Integer>());
+	if (!this.ort.containsKey(y)) {
+	    this.ort.put(y, new HashMap<Integer,Integer>());
 	}
 
-	this.ort.get(x).put(y, w);
+	this.ort.get(y).put(x, w);
 	this.wer.put(w, new Zweivektor(x,y));
-    }
-
-    // Ist der Ort [x,y] besetzt?
-    boolean besetzt(int x, int y) {
-	return this.ort.containsKey(x)
-	    && this.ort.get(x).containsKey(y);
-    }
-
-    // Wer steht am Ort [x,y]?
-    int werwert(int x, int y) {
-	return this.ort.get(x).get(y);
     }
 
     // Lösche den Knoten an der Stelle [x,y]
     void loesche(int x, int y) {
-	int wert = this.ort.get(x).get(y);
+	int wert = this.ort.get(y).get(x);
 	this.wer.remove(wert);
-	this.ort.get(x).remove(y);
+	this.ort.get(y).remove(x);
 
-	if (this.ort.get(x).size() == 0) {
-	    this.ort.remove(x);
+	if (this.ort.get(y).size() == 0) {
+	    this.ort.remove(y);
 	}
     }
-    
-    // Verschiebe den Knoten, der an [x,y] besetzt, nach links.
+
+    // Ist der Ort [x,y] besetzt?
+    boolean besetzt(int x, int y) {
+	return this.ort.containsKey(y)
+	    && this.ort.get(y).containsKey(x);
+    }
+
+    // Verschiebe den Knoten, der [x,y] besetzt, nach links.
     //
     // Wer steht an der Stelle [x, y]?
     // Nehme den Knoten A.
@@ -189,13 +255,13 @@ public class Binaerbaumorthorizontal {
     //   Wer steht an der Stelle [x-1,y]?
     //   Nehme den Knoten B.
     //   Verschiebe B links.
-    // Nein:
-    //   Verschiebe A nach links.
+    // 
+    // Verschiebe A nach links.
     // Fertig.
     void verschiebelinks(int x, int y) {
 	
 	// Wert des Knotens, der [x,y] besetzt.
-	int k = this.werwert(x,y);
+	int k = this.ort.get(y).get(x);
 
 	if (this.besetzt(x-1,y)) {
 	    this.verschiebelinks(x-1,y);
@@ -210,11 +276,11 @@ public class Binaerbaumorthorizontal {
 	return;
     }
 
-    // Verschiebe den Knoten, der an [x,y] besetzt, nach rechts.
+    // Verschiebe den Knoten, der [x,y] besetzt, nach rechts.
     void verschieberechts(int x, int y) {
 	
 	// Wert des Knotens, der [x,y] besetzt.
-	int k = this.werwert(x,y);
+	int k = this.ort.get(y).get(x);
 
 	if (this.besetzt(x+1,y)) {
 	    this.verschieberechts(x+1,y);
@@ -229,40 +295,81 @@ public class Binaerbaumorthorizontal {
 	return;
     }
 
+    // Wir wollen ein linkes Kind auf der Stelle (x-1,y+1) machen.
+    //
+    //                    o (x,y)
+    //                   /
+    //                  o (x-1,y+1)
+    //
+    // Aber es gibt eine Menge von möglichen Überschneidungen.
+    //
+    // Nehme alle möglichen Überschneidungen von (x-n,y)
+    //
+    //         o o ... o o (x,y)
+    //
+    // Finde alle ihre Kinder, die die Kante ((x,y),(x-1,y+1))
+    // überschneiden.
+    //
+    // Verschiebe alle die überschneidenden Kinder züruck zu ihren
+    // Eltern, nach links.
+    // void entwirrenlinks(int x, int y) {
+
+    // 	// Nehme alle Eltern, die auf der Zeile x steht.
+    // 	ArrayList<Integer> xknoten = new ArrayList<Integer>();
+    // 	Set<Integer> = this.ort.get(x).keySet();
+    // 	ArrayList<Integer> xknoteninks = new ArrayList<Integer>();
+
+    // 	// Nehme nur die Eltern, die nach links von (x,y) steht.
+    // 	for (int xk : xknoten) {
+    // 	    if (this.wer.get(xk).eins < );
+    // 	}
+    // }
+
+    // Baue ein Kind von b nach links.
+    void bauelinks(Binaerbaum b, int x, int y) {
+	int linksx = x - 1;
+	int linksy = y + 1;
+
+	if (this.besetzt(linksx, linksy)) {
+	    // Verschiebe den jeweiligen Knoten, der die stelle Stelle
+	    // [linksx,linksy] besetzt hat.
+	    this.verschiebelinks(linksx, linksy);
+	}
+
+	this.fuege(linksx, linksy, b.links.wert);
+	this.baue(b.links, linksx, linksy);
+    }
+
+    // Baue ein Kind von b nach rechts.
+    void bauerechts(Binaerbaum b, int x, int y) {
+	int rechtsx = x + 1;
+	int rechtsy = y + 1;
+
+	if (this.besetzt(rechtsx, rechtsy)) {
+	    // Verschiebe den jeweiligen Knoten, der die stelle Stelle
+	    // [rechtsx,rechtsy] besetzt hat.
+	    this.verschieberechts(rechtsx, rechtsy);
+	}
+	
+	this.fuege(rechtsx, rechtsy, b.rechts.wert);
+	this.baue(b.rechts, rechtsx, rechtsy);
+    }
+
     void baue(Binaerbaum b, int x, int y) {
 
 	if (b == null) {
 	    return;
 	}
 	
-	// Baum b ist schon gefügt. Füge seine Kinder.
+	// Der Ort des Baumes b ist schon berechnet.
+	// Finde die Orte seiner Kinder.
 
 	if (b.links != null) {
-	    int linksx = x - 1;
-	    int linksy = y + 1;
-
-	    if (this.besetzt(linksx, linksy)) {
-		// Verschiebe den jeweiligen Knoten, der die stelle Stelle
-		// [linksx,linksy] besetzt hat.
-		verschiebelinks(linksx, linksy);
-	    }
-
-	    this.fuege(linksx, linksy, b.links.wert);
-	    this.baue(b.links, linksx, linksy);
+	    bauelinks(b, x, y);
 	}
 
 	if (b.rechts != null) {
-	    int rechtsx = x + 1;
-	    int rechtsy = y + 1;
-
-	    if (this.besetzt(rechtsx, rechtsy)) {
-		// Verschiebe den jeweiligen Knoten, der die stelle Stelle
-		// [rechtsx,rechtsy] besetzt hat.
-		verschieberechts(rechtsx, rechtsy);
-	    }
-	    
-	    this.fuege(rechtsx, rechtsy, b.rechts.wert);
-	    this.baue(b.rechts, rechtsx, rechtsy);
+	    bauerechts(b, x, y);
 	}
     }
 
