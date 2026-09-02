@@ -57,10 +57,8 @@ public class Binaerbaumwelthorizontal {
 	// Zweivektor[] ortez = new Zweivektor[orte.length];
 	
 	for (int i = 0; i < orte.length; i++) {
-	    // orte[i] = new Zweivektor(orte[i].eins * this.deltax + this.ursprungx,
-	    // 			     orte[i].zwei * this.deltay + this.ursprungy);
 	    orte[i].eins = orte[i].eins * this.deltax + this.ursprungx;
-	    orte[i].zwei = orte[i].zwei * this.deltax + this.ursprungx;
+	    orte[i].zwei = orte[i].zwei * this.deltax + this.ursprungy;
 	}
 
 	return orte;

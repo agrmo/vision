@@ -8,6 +8,7 @@ import javax.swing.JFrame;
 import maler.Maler;
 import sicht.Sicht;
 import vektor.Zweivektor;
+import baum.binaer.zufall.Zufallsbinaerbaum;
 
 // java -cp classes sicht.baum.binaer.horizontal.Main
 
@@ -81,7 +82,34 @@ public class Main {
 	frame.setVisible(true);
     }
 
+    static void beispieldrei() {
+
+	// Mache n knoten mit Wahrscheinlichkeit p, um jeweilige linke
+	// Kante irgendo zu machen.
+	Binaerbaum b = Zufallsbinaerbaum.baue(30, 0.5);
+	
+	int dx = 30;
+	int dy = 50;
+	double d = 20;
+	int ux = 500;
+	int uy = 50;
+	Binaerbaumwelthorizontal bw = new Binaerbaumwelthorizontal(b,
+								   ux, uy,
+								   dx, dy);
+	
+	Binaerbaumsichthorizontal s = new Binaerbaumsichthorizontal(bw, d);
+
+	Maler m = new Maler(new Sicht[] {s});
+	JFrame frame = new JFrame();
+	frame.getContentPane().setBackground(Color.BLACK);
+        frame.getContentPane().setForeground(Color.WHITE);
+	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	frame.setSize(1200, 600);
+	frame.add(m);
+	frame.setVisible(true);
+    }
+
     public static void main(String[] args) {
-	beispielzwei();
+	beispieldrei();
     }
 }
