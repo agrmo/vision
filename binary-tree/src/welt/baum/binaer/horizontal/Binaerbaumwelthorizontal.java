@@ -3,11 +3,11 @@ package welt.baum.binaer.horizontal;
 import baum.binaer.Binaerbaum;
 import java.util.ArrayList;
 import vektor.Zweivektor;
-import baum.binaer.Binaerbaumgroesse;
 import welt.baum.binaer.Binaerbaumstrecke;
 import druck.strecke.Streckedrucker;
 import strecke.Zweistrecke;
 import druck.vektor.Vektordrucker;
+import java.util.HashMap;
 
 // Mache eine Welt für einen zweidimensionalen binärschen Baum.
 public class Binaerbaumwelthorizontal {
@@ -42,31 +42,46 @@ public class Binaerbaumwelthorizontal {
 	// Berechne die unterliegende Orten.
 	Binaerbaumorthorizontal bo = new Binaerbaumorthorizontal(b);
 
+	// Nehme die Abbildung
+	HashMap<Integer,Zweivektor> wer = bo.nehmewer();
+
+	// Straffe und verschiebe die Orte
+	straffeverschiebe(wer);
+
 	// Berechne die Orte nach Verstraffung und Verschiebung.
-	this.orte = this.nehmeorte(bo);
-	this.strecken = this.nehmestrecken(bo);
+	this.orte = this.nehmeorte(wer);
+	this.strecken = this.nehmestrecken(wer);
+    }
+
+    void straffeverschiebe(HashMap<Integer,Zweivektor> wer) {
+	for (int k : wer.keySet()) {
+	    Zweivektor zv = wer.get(k);
+	    zv.eins = zv.eins * this.deltax + this.ursprungx;
+	    zv.zwei = zv.zwei * this.deltax + this.ursprungy;
+	}
     }
 
     // Nehme eine Liste von allen Knoten dieses Baumes.
-    Zweivektor[] nehmeorte(Binaerbaumorthorizontal bo) {
+    Zweivektor[] nehmeorte(HashMap<Integer,Zweivektor> wer) {
 	
 	// Die berechnete Orte, nicht übereinanderliegende,
 	// unverschoben und unverstafft.
-	Zweivektor[] orte = bo.nehmeorte();
+	Zweivektor[] orte = new Zweivektor[wer.size()];
 
-	// Zweivektor[] ortez = new Zweivektor[orte.length];
-	
-	for (int i = 0; i < orte.length; i++) {
-	    orte[i].eins = orte[i].eins * this.deltax + this.ursprungx;
-	    orte[i].zwei = orte[i].zwei * this.deltax + this.ursprungy;
+	int i = 0;
+	for (int k : wer.keySet()) {
+	    orte[i] = wer.get(k);
+	    i += 1;
 	}
 
 	return orte;
     }
 
     // Nehme eine Liste von allen Kanten dieses Baumes.
-    Zweistrecke[] nehmestrecken(Binaerbaumorthorizontal bo) {
-	Zweistrecke[] zsl = Binaerbaumstrecke.strecken(this.baum, bo.wer);
+    Zweistrecke[] nehmestrecken(HashMap<Integer,Zweivektor> wer) {
+
+	Zweistrecke[] zsl = Binaerbaumstrecke.strecken(this.baum, wer);
+	
 	return zsl;
     }
 } 

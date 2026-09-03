@@ -16,8 +16,7 @@ public class Vektorverdoppler {
     public static Zweivektor[] verdoppele(Zweivektor[] pla) {
 	Zweivektor[] plb = new Zweivektor[pla.length];
 	for (int i = 0; i < pla.length; i++) {
-	    plb[i] = new Zweivektor(pla[i].eins,
-				    pla[i].zwei);
+	    plb[i] = new Zweivektor(pla[i].eins, pla[i].zwei);
 	}
 
 	return plb;

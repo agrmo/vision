@@ -6,8 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import vektor.Zweivektor;
-import vektor.Zweivektor;
-import java.util.HashMap;
+import vektor.Intzweivektor;
 import java.util.Set;
 import druck.vektor.Vektordrucker;
 import druck.menge.Mengedrucker;
@@ -194,10 +193,10 @@ public class Binaerbaumorthorizontal {
     // Also .get(y).get(x) ist besser.
     // Auch wir brauchen die Liste von allen Knoten
     // auf einer bestimmten Zeile y.
-    public HashMap<Integer,HashMap<Integer,Integer>> ort;
+    HashMap<Integer,HashMap<Integer,Integer>> ort;
     
     // Wert -> Ort
-    public HashMap<Integer,Zweivektor> wer;
+    HashMap<Integer,Intzweivektor> wer;
 
     public Binaerbaumorthorizontal(Binaerbaum bu) {
 
@@ -208,7 +207,7 @@ public class Binaerbaumorthorizontal {
 	    
 	// Am Anfang kennen wir nun den Ort des Ursprungs.
 	this.ort = new HashMap<Integer,HashMap<Integer,Integer>>();
-	this.wer = new HashMap<Integer,Zweivektor>();
+	this.wer = new HashMap<Integer,Intzweivektor>();
 	this.fuege(0, 0, bu.wert);
 
 	// Fangen unmittelbar mit dem Algorithmus an.
@@ -222,7 +221,7 @@ public class Binaerbaumorthorizontal {
 	}
 
 	this.ort.get(y).put(x, w);
-	this.wer.put(w, new Zweivektor(x,y));
+	this.wer.put(w, new Intzweivektor(x,y));
     }
 
     // Lösche den Knoten an der Stelle [x,y]
@@ -386,9 +385,8 @@ public class Binaerbaumorthorizontal {
 				   + this.wer.get(ek).eins + " "
 				   + this.wer.get(ek).zwei);
 		
-		// Problem: wir sollen nicht double benutzen.
-		this.verschiebelinks((int) this.wer.get(ek).eins,
-				     (int) this.wer.get(ek).zwei);
+		this.verschiebelinks(this.wer.get(ek).eins,
+				     this.wer.get(ek).zwei);
 	    }
 	}
 	// Fertig?
@@ -468,9 +466,8 @@ public class Binaerbaumorthorizontal {
 				   + this.wer.get(ek).eins + " "
 				   + this.wer.get(ek).zwei);
 		
-		// Problem: wir sollen nicht double benutzen.
-		this.verschieberechts((int) this.wer.get(ek).eins,
-				      (int) this.wer.get(ek).zwei);
+		this.verschieberechts(this.wer.get(ek).eins,
+				      this.wer.get(ek).zwei);
 	    }
 	}
 	// Fertig?
@@ -530,21 +527,17 @@ public class Binaerbaumorthorizontal {
 	}
     }
 
-    // Nehme eine Liste von allen Orten, die berechnet wurden.
-    // Verbessern Sie diese Funktion bitte.
-    public Zweivektor[] nehmeorte() {
-	
-	int groesse = Binaerbaumgroesse.groesse(this.baumursprung);
-	Zweivektor[] orte = new Zweivektor[groesse];
+    public HashMap<Integer,Zweivektor> nehmewer() {
 
-	int i = 0;
-	for (int wert : this.wer.keySet()) {
-	    Zweivektor ort = this.wer.get(wert);
-	    orte[i] = ort;
-	    i += 1;
+	HashMap<Integer,Zweivektor> zwer = new HashMap<Integer,Zweivektor>();
+	
+	for (int k : this.wer.keySet()) {
+	    Intzweivektor iv = this.wer.get(k);
+	    Zweivektor dv = new Zweivektor(iv.eins, iv.zwei);
+	    zwer.put(k, dv);
 	}
 
-    	return orte;
+	return zwer;
     }
 
     // Nehme ein String dieser Datenstruktur.
@@ -553,7 +546,7 @@ public class Binaerbaumorthorizontal {
 	StringBuilder sb = new StringBuilder();
 
 	for (int key : this.wer.keySet()) {
-	    Zweivektor ort = this.wer.get(key);
+	    Intzweivektor ort = this.wer.get(key);
 	    sb.append(key + ": [" + ort.eins + ", " + ort.zwei + "]");
 	    sb.append("\n");
 	}
