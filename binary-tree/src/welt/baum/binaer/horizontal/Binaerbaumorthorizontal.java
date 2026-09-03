@@ -319,7 +319,6 @@ public class Binaerbaumorthorizontal {
 	for (int i = 0; i < yknoten.length; i++) {
 	    yknoten[i] = this.ort.get(y).get(yknotenxlist[i]);
 	}
-	System.out.println(Arrays.toString(yknoten));
 
 	// Nehme nur die Eltern, die nach links von (x,y) steht.
 	ArrayList<Integer> yknotenlinks = new ArrayList<Integer>();
@@ -401,7 +400,6 @@ public class Binaerbaumorthorizontal {
 	for (int i = 0; i < yknoten.length; i++) {
 	    yknoten[i] = this.ort.get(y).get(yknotenxlist[i]);
 	}
-	System.out.println(Arrays.toString(yknoten));
 
 	// Nehme nur die Eltern, die nach rechts von (x,y) steht.
 	ArrayList<Integer> yknotenrechts = new ArrayList<Integer>();
@@ -479,6 +477,7 @@ public class Binaerbaumorthorizontal {
 	int linksy = y + 1;
 
 	this.entwirrenlinks(x,y);
+	this.entwirrenrechts(x,y);
 	
 	if (this.besetzt(linksx, linksy)) {
 	    // Verschiebe den jeweiligen Knoten, der die stelle Stelle
@@ -496,14 +495,14 @@ public class Binaerbaumorthorizontal {
 	int rechtsx = x + 1;
 	int rechtsy = y + 1;
 
+	this.entwirrenlinks(x,y);
 	this.entwirrenrechts(x,y);
-	
+
 	if (this.besetzt(rechtsx, rechtsy)) {
 	    // Verschiebe den jeweiligen Knoten, der die stelle Stelle
 	    // [rechtsx,rechtsy] besetzt hat.
 	    this.verschieberechts(rechtsx, rechtsy);
 	}
-	
 	
 	this.fuege(rechtsx, rechtsy, b.rechts.wert);
 	this.baue(b.rechts, rechtsx, rechtsy);
