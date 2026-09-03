@@ -1,14 +1,18 @@
 package welt.baum.binaer.horizontal;
 
 import baum.binaer.Binaerbaum;
-import baum.binaer.Binaerbaumelter;
 import baum.binaer.Binaerbaumgroesse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import vektor.Zweivektor;
+import vektor.Zweivektor;
 import java.util.HashMap;
 import java.util.Set;
+import druck.vektor.Vektordrucker;
+import druck.menge.Mengedrucker;
+import baum.binaer.Binaerbaumabbildung;
+import java.util.Arrays;
 
 // Berechene alle Orte dieses Baumes.  Ein Rechner, der durch einem
 // Baum geht, und berechnet die Stelle jedes Knotens.
@@ -167,8 +171,7 @@ import java.util.Set;
 //
 // Problem
 //
-// Es gebt mehr Knoten als A und C, die übereinander überschneiden können.
-//
+// Es gibt mehr Knoten als A und C, die übereinander überschneiden können.
 
 public class Binaerbaumorthorizontal {
 
@@ -178,8 +181,8 @@ public class Binaerbaumorthorizontal {
     // - rechts
     Binaerbaum baumursprung;
 
-    // Wert -> Wert
-    HashMap<Integer,Integer> elter;
+    // Leider brauchen wir eine Abbildung von Wert bis Baum.
+    HashMap<Integer,Binaerbaum> werbaum;
 
     // Ort -> Wert
     // .get(x).get(y)
@@ -198,25 +201,18 @@ public class Binaerbaumorthorizontal {
 
     public Binaerbaumorthorizontal(Binaerbaum bu) {
 
-	// Fangen wir mit dem ursprünglichen Baum und dem
-	// ursprünglichem Ort an.
+	// Der ursprüngliche Baum und der ursprüngliche Ort.
 	this.baumursprung = bu;
 
-	// Der ganze Baum ist gebaut, und wir brauchen (leider) eine
-	// Abbildung für die Eltern.
-	this.elter = Binaerbaumelter.elter(bu);
-
+	this.werbaum = Binaerbaumabbildung.werbaum(bu);
+	    
 	// Am Anfang kennen wir nun den Ort des Ursprungs.
 	this.ort = new HashMap<Integer,HashMap<Integer,Integer>>();
 	this.wer = new HashMap<Integer,Zweivektor>();
-	
 	this.fuege(0, 0, bu.wert);
 
-	// Fangen unmittelbar mit dem Bau an.
-	this.baue(this.baumursprung, 0, 0);
-
-	// Schon haben wir alle Orten gefunden.
-	// Die Orte stehen schon im wer und ort.
+	// Fangen unmittelbar mit dem Algorithmus an.
+	this.baue(bu, 0, 0);
     }
 
     // Fuege einen Knoten am Ort.
@@ -303,39 +299,197 @@ public class Binaerbaumorthorizontal {
     //
     // Aber es gibt eine Menge von möglichen Überschneidungen.
     //
-    // Nehme alle möglichen Überschneidungen von (x-n,y)
+    // Nehme alle möglichen Überschneidungen von (x-i,y)
     //
     //         o o ... o o (x,y)
+    //                  \  
+    //                   o o ... o x+j >= x 
     //
     // Finde alle ihre Kinder, die die Kante ((x,y),(x-1,y+1))
     // überschneiden.
     //
     // Verschiebe alle die überschneidenden Kinder züruck zu ihren
     // Eltern, nach links.
-    // void entwirrenlinks(int x, int y) {
+    void entwirrenlinks(int x, int y) {
 
-    // 	// Nehme alle Eltern, die auf der Zeile x steht.
-    // 	ArrayList<Integer> xknoten = new ArrayList<Integer>();
-    // 	Set<Integer> = this.ort.get(x).keySet();
-    // 	ArrayList<Integer> xknoteninks = new ArrayList<Integer>();
+	// Nehme alle Knoten, die auf der Zeile y steht.
+	Set<Integer> yknotenx = this.ort.get(y).keySet();
+	Integer[] yknotenxlist = new Integer[yknotenx.size()];
+	yknotenxlist = yknotenx.toArray(yknotenxlist);
+	int[] yknoten = new int[yknotenx.size()];
+	for (int i = 0; i < yknoten.length; i++) {
+	    yknoten[i] = this.ort.get(y).get(yknotenxlist[i]);
+	}
+	System.out.println(Arrays.toString(yknoten));
 
-    // 	// Nehme nur die Eltern, die nach links von (x,y) steht.
-    // 	for (int xk : xknoten) {
-    // 	    if (this.wer.get(xk).eins < );
-    // 	}
-    // }
+	// Nehme nur die Eltern, die nach links von (x,y) steht.
+	ArrayList<Integer> yknotenlinks = new ArrayList<Integer>();
+	for (int yk : yknoten) {
+	    if (this.wer.get(yk).eins < x) {
+		yknotenlinks.add(yk);
+	    }
+	}
+
+	if (yknotenlinks.size() == 0) {
+	    return;
+	}
+
+	// Nehme alle Kinder von yknotenlinks.
+	// Diese Kinder stehen auf der nächsten Zeile, y+1.
+	// Aber sie stehen vielleicht links oder rechts von (x,y).
+	ArrayList<Integer> yknotenlinkskinder = new ArrayList<Integer>();
+	for (int ykl : yknotenlinks) {
+	    if (this.werbaum.get(ykl).links != null) {
+		yknotenlinkskinder.add(this.werbaum.get(ykl).links.wert);
+	    }
+
+	    if (this.werbaum.get(ykl).rechts != null) {
+		yknotenlinkskinder.add(this.werbaum.get(ykl).rechts.wert);
+	    }
+	}
+
+	if (yknotenlinkskinder.size() == 0) {
+	    return;
+	}
+					
+
+	// Für alle die Kinder in der nächsten Zeile, finde alle Kinder,
+	// die rechts von (x,y) steht. Wir müssen solche Kinder entwirren.
+	ArrayList<Integer> entwirrtekinder = new ArrayList<Integer>();
+	for (int kind : yknotenlinkskinder) {
+	    //
+	    // Elter links -> o x
+	    //                 \
+ 	    //                  o o o  <- drei verwickelte Kinder
+	    //                 >= x
+	    //
+	    if (this.wer.get(kind).eins >= x) {
+		entwirrtekinder.add(kind);
+	    }
+	}
+
+	if (entwirrtekinder.size() == 0) {
+	    return;
+	}
+
+	// Für alle entwirrte Kinder, verschieben sie nach links, bis
+	// sie links von x ist.
+	//
+	//                   o x
+	//                    \
+	//                     o o o <- verschieben links
+	//
+	for (int ek : entwirrtekinder) {
+	    while (this.wer.get(ek).eins >= x) {
+
+		System.out.println("Verschiebe links: "
+				   + this.wer.get(ek).eins + " "
+				   + this.wer.get(ek).zwei);
+		
+		// Problem: wir sollen nicht double benutzen.
+		this.verschiebelinks((int) this.wer.get(ek).eins,
+				     (int) this.wer.get(ek).zwei);
+	    }
+	}
+	// Fertig?
+    }
+
+    void entwirrenrechts(int x, int y) {
+	// Nehme alle Knoten, die auf der Zeile y steht.
+	Set<Integer> yknotenx = this.ort.get(y).keySet();
+	Integer[] yknotenxlist = new Integer[yknotenx.size()];
+	yknotenxlist = yknotenx.toArray(yknotenxlist);
+	int[] yknoten = new int[yknotenx.size()];
+	for (int i = 0; i < yknoten.length; i++) {
+	    yknoten[i] = this.ort.get(y).get(yknotenxlist[i]);
+	}
+	System.out.println(Arrays.toString(yknoten));
+
+	// Nehme nur die Eltern, die nach rechts von (x,y) steht.
+	ArrayList<Integer> yknotenrechts = new ArrayList<Integer>();
+	for (int yk : yknoten) {
+	    if (this.wer.get(yk).eins > x) {
+		yknotenrechts.add(yk);
+	    }
+	}
+
+	if (yknotenrechts.size() == 0) {
+	    return;
+	}
+
+	// Nehme alle Kinder von yknotenrechts.
+	// Diese Kinder stehen auf der nächsten Zeile, y+1.
+	// Aber sie stehen vielleicht links oder rechts von (x,y).
+	ArrayList<Integer> yknotenrechtskinder = new ArrayList<Integer>();
+	for (int ykr : yknotenrechts) {
+	    if (this.werbaum.get(ykr).links != null) {
+		yknotenrechtskinder.add(this.werbaum.get(ykr).links.wert);
+	    }
+
+	    if (this.werbaum.get(ykr).rechts != null) {
+		yknotenrechtskinder.add(this.werbaum.get(ykr).rechts.wert);
+	    }
+	}
+
+	if (yknotenrechtskinder.size() == 0) {
+	    return;
+	}
+
+	// Für alle die Kinder in der nächsten Zeile, finde alle Kinder,
+	// die links von (x,y) steht. Wir müssen solche Kinder entwirren.
+	ArrayList<Integer> entwirrtekinder = new ArrayList<Integer>();
+	for (int kind : yknotenrechtskinder) {
+	    //
+	    //                                  x o <- Elter rechts
+	    //                                   /
+ 	    //  drei verwickelte Kinder ->  o o o
+	    //                               <= x
+	    //
+	    if (this.wer.get(kind).eins <= x) {
+		entwirrtekinder.add(kind);
+	    }
+	}
+
+	if (entwirrtekinder.size() == 0) {
+	    return;
+	}
+
+	// Für alle entwirrte Kinder, verschieben sie nach rechts, bis
+	// sie rechts von x ist.
+	//
+	//                            x o
+	//                             /
+	//  verschieben rechts -> o o o
+	//
+	for (int ek : entwirrtekinder) {
+	    while (this.wer.get(ek).eins <= x) {
+
+		System.out.println("Verschiebe rechts: "
+				   + this.wer.get(ek).eins + " "
+				   + this.wer.get(ek).zwei);
+		
+		// Problem: wir sollen nicht double benutzen.
+		this.verschieberechts((int) this.wer.get(ek).eins,
+				      (int) this.wer.get(ek).zwei);
+	    }
+	}
+	// Fertig?
+    }
 
     // Baue ein Kind von b nach links.
     void bauelinks(Binaerbaum b, int x, int y) {
 	int linksx = x - 1;
 	int linksy = y + 1;
 
+	this.entwirrenlinks(x,y);
+	
 	if (this.besetzt(linksx, linksy)) {
 	    // Verschiebe den jeweiligen Knoten, der die stelle Stelle
 	    // [linksx,linksy] besetzt hat.
 	    this.verschiebelinks(linksx, linksy);
 	}
 
+	
 	this.fuege(linksx, linksy, b.links.wert);
 	this.baue(b.links, linksx, linksy);
     }
@@ -345,11 +499,14 @@ public class Binaerbaumorthorizontal {
 	int rechtsx = x + 1;
 	int rechtsy = y + 1;
 
+	this.entwirrenrechts(x,y);
+	
 	if (this.besetzt(rechtsx, rechtsy)) {
 	    // Verschiebe den jeweiligen Knoten, der die stelle Stelle
 	    // [rechtsx,rechtsy] besetzt hat.
 	    this.verschieberechts(rechtsx, rechtsy);
 	}
+	
 	
 	this.fuege(rechtsx, rechtsy, b.rechts.wert);
 	this.baue(b.rechts, rechtsx, rechtsy);
@@ -374,6 +531,7 @@ public class Binaerbaumorthorizontal {
     }
 
     // Nehme eine Liste von allen Orten, die berechnet wurden.
+    // Verbessern Sie diese Funktion bitte.
     public Zweivektor[] nehmeorte() {
 	
 	int groesse = Binaerbaumgroesse.groesse(this.baumursprung);
@@ -390,7 +548,7 @@ public class Binaerbaumorthorizontal {
     }
 
     // Nehme ein String dieser Datenstruktur.
-    // Soll in druck/ sein...
+    // Verbessern Sie diese Funktion bitte.
     public String drucke() {
 	StringBuilder sb = new StringBuilder();
 

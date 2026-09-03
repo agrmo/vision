@@ -4,14 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import baum.binaer.Binaerbaum;
 
-public class Binaerbaumelter {
+public class Binaerbaumabbildung {
 
-    // Mache eine Abbildung von Knoten bis Knoten. Die Abbildung zeigt
-    // das Elter jedes Knotens. 
-    public static HashMap<Integer,Integer> elter(Binaerbaum b) {
+    // Mache eine Abbildung von Zahl bis Baum.
+    public static HashMap<Integer,Binaerbaum> werbaum(Binaerbaum b) {
 
 	// Abbildung von Knoten bis Knoten.
-	HashMap<Integer,Integer> elter = new HashMap<Integer,Integer>();
+	HashMap<Integer,Binaerbaum> werbaum = new HashMap<Integer,Binaerbaum>();
 
 	// Liste von Knoten, durch denen zu laufen.
 	ArrayList<Binaerbaum> zulaufen = new ArrayList<Binaerbaum>();
@@ -21,20 +20,23 @@ public class Binaerbaumelter {
 	zulaufen.add(b);
 
 	while (zulaufen.size() > 0) {
-	    
-	    Binaerbaum naechste = zulaufen.remove(0);
+
+	    // Tiefensuche
+	    // oder Breitensuche mit remove(0).
+	    Binaerbaum naechste = zulaufen.remove(zulaufen.size() - 1);
+
+	    // Füge ihn in die Abbildung.
+	    werbaum.put(naechste.wert, naechste);
 	    
 	    if (naechste.links != null) {
-		elter.put(naechste.links.wert, naechste.wert);
 		zulaufen.add(naechste.links);
 	    }
 
 	    if (naechste.rechts != null) {
-		elter.put(naechste.rechts.wert, naechste.wert);
 		zulaufen.add(naechste.rechts);
 	    }
 	}
 	
-	return elter;
+	return werbaum;
     }
 }
