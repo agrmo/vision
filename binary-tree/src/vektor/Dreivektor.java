@@ -6,14 +6,12 @@ public class Dreivektor {
     public double zwei;
     public double drei;
 
-    // ein: ganze Zahl, ganze Zahl, ganze Zahl
     public Dreivektor(double x, double y, double z) {
 	this.eins = x;
 	this.zwei = y;
 	this.drei = z;
     }
 
-    // ein: Dreivektor
     // Addiere den gegebenen Dreivektor zu diesem.  
     public void addiere(Dreivektor v) {
 	this.eins += v.eins;
@@ -21,7 +19,6 @@ public class Dreivektor {
 	this.drei += v.drei;
     }
 
-    // ein: Dreivektor
     // Subtrahiere den gegebenen Dreivektor zu diesem.  
     public void subtrahiere(Dreivektor v) {
 	this.eins -= v.eins;
@@ -29,7 +26,6 @@ public class Dreivektor {
 	this.drei -= v.drei;
     }
 
-    // ein: Dreivektor
     // Dividiere den gegebenen Dreivektor zu diesem.  
     public void dividiere(Dreivektor v) {
 	this.eins = this.eins / v.eins;
@@ -37,7 +33,6 @@ public class Dreivektor {
 	this.drei = this.drei / v.drei;
     }
     
-    // ein: Dreivektor
     // Multipliziere den gegebenen Dreivektor mit a.
     public void multipliziere(double a) {
 	this.eins = this.eins * a;
@@ -45,7 +40,6 @@ public class Dreivektor {
 	this.drei = this.drei * a;
     }
     
-    // ein: Dreivektor
     // Multipliziere teilweise den gegebenen Dreivektor zu diesem.  
     public void punkt(Dreivektor v) {
 	this.eins = this.eins * v.eins;

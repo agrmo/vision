@@ -1,17 +1,17 @@
-package welt.baum.binaer.horizontal;
+package welt.baum.binaer;
 
 import baum.binaer.Binaerbaum;
+import baum.binaer.Binaerbaumabbildung;
 import baum.binaer.Binaerbaumgroesse;
+import druck.menge.Mengedrucker;
+import druck.vektor.Vektordrucker;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import vektor.Zweivektor;
-import vektor.Intzweivektor;
 import java.util.Set;
-import druck.vektor.Vektordrucker;
-import druck.menge.Mengedrucker;
-import baum.binaer.Binaerbaumabbildung;
-import java.util.Arrays;
+import vektor.Zweivektor;
+import vektor.ganz.GZweivektor;
 
 // Berechene alle Orte dieses Baumes.  Ein Rechner, der durch einem
 // Baum geht, und berechnet die Stelle jedes Knotens.
@@ -172,7 +172,7 @@ import java.util.Arrays;
 //
 // Es gibt mehr Knoten als A und C, die übereinander überschneiden können.
 
-public class Binaerbaumorthorizontal {
+public class Binaerbaumort {
 
     // Baum:
     // - wert
@@ -196,9 +196,9 @@ public class Binaerbaumorthorizontal {
     HashMap<Integer,HashMap<Integer,Integer>> ort;
     
     // Wert -> Ort
-    HashMap<Integer,Intzweivektor> wer;
+    public HashMap<Integer,GZweivektor> wer;
 
-    public Binaerbaumorthorizontal(Binaerbaum bu) {
+    public Binaerbaumort(Binaerbaum bu) {
 
 	// Der ursprüngliche Baum und der ursprüngliche Ort.
 	this.baumursprung = bu;
@@ -207,7 +207,7 @@ public class Binaerbaumorthorizontal {
 	    
 	// Am Anfang kennen wir nun den Ort des Ursprungs.
 	this.ort = new HashMap<Integer,HashMap<Integer,Integer>>();
-	this.wer = new HashMap<Integer,Intzweivektor>();
+	this.wer = new HashMap<Integer,GZweivektor>();
 	this.fuege(0, 0, bu.wert);
 
 	// Fangen unmittelbar mit dem Algorithmus an.
@@ -221,7 +221,7 @@ public class Binaerbaumorthorizontal {
 	}
 
 	this.ort.get(y).put(x, w);
-	this.wer.put(w, new Intzweivektor(x,y));
+	this.wer.put(w, new GZweivektor(x,y));
     }
 
     // Lösche den Knoten an der Stelle [x,y]
@@ -379,16 +379,11 @@ public class Binaerbaumorthorizontal {
 	//
 	for (int ek : entwirrtekinder) {
 	    while (this.wer.get(ek).eins >= x) {
-
-		System.out.println("Verschiebe links: "
-				   + this.wer.get(ek).eins + " "
-				   + this.wer.get(ek).zwei);
-		
 		this.verschiebelinks(this.wer.get(ek).eins,
 				     this.wer.get(ek).zwei);
 	    }
 	}
-	// Fertig?
+	// Fertig
     }
 
     void entwirrenrechts(int x, int y) {
@@ -458,17 +453,12 @@ public class Binaerbaumorthorizontal {
 	//  verschieben rechts -> o o o
 	//
 	for (int ek : entwirrtekinder) {
-	    while (this.wer.get(ek).eins <= x) {
-
-		System.out.println("Verschiebe rechts: "
-				   + this.wer.get(ek).eins + " "
-				   + this.wer.get(ek).zwei);
-		
+	    while (this.wer.get(ek).eins <= x) {		
 		this.verschieberechts(this.wer.get(ek).eins,
 				      this.wer.get(ek).zwei);
 	    }
 	}
-	// Fertig?
+	// Fertig
     }
 
     // Baue ein Kind von b nach links.
@@ -526,30 +516,20 @@ public class Binaerbaumorthorizontal {
 	}
     }
 
-    public HashMap<Integer,Zweivektor> nehmewer() {
-
-	HashMap<Integer,Zweivektor> zwer = new HashMap<Integer,Zweivektor>();
+    // Nehme eine Liste von allen Knoten dieses Baumes.
+    public GZweivektor[] nehmeorte() {
 	
+	// Die berechnete Orte, nicht übereinanderliegende,
+	// unverschoben und unverstafft.
+	GZweivektor[] orte = new GZweivektor[this.wer.size()];
+
+	int i = 0;
 	for (int k : this.wer.keySet()) {
-	    Intzweivektor iv = this.wer.get(k);
-	    Zweivektor dv = new Zweivektor(iv.eins, iv.zwei);
-	    zwer.put(k, dv);
+	    orte[i] = this.wer.get(k);
+	    i += 1;
 	}
 
-	return zwer;
+	return orte;
     }
 
-    // Nehme ein String dieser Datenstruktur.
-    // Verbessern Sie diese Funktion bitte.
-    public String drucke() {
-	StringBuilder sb = new StringBuilder();
-
-	for (int key : this.wer.keySet()) {
-	    Intzweivektor ort = this.wer.get(key);
-	    sb.append(key + ": [" + ort.eins + ", " + ort.zwei + "]");
-	    sb.append("\n");
-	}
-
-	return sb.toString();
-    }
 }

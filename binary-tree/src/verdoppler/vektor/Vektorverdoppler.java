@@ -2,6 +2,7 @@ package verdoppler.vektor;
 
 import vektor.Dreivektor;
 import vektor.Zweivektor;
+import vektor.ganz.GZweivektor;
 
 public class Vektorverdoppler {
 
@@ -17,6 +18,15 @@ public class Vektorverdoppler {
 	Zweivektor[] plb = new Zweivektor[pla.length];
 	for (int i = 0; i < pla.length; i++) {
 	    plb[i] = new Zweivektor(pla[i].eins, pla[i].zwei);
+	}
+
+	return plb;
+    }
+
+    public static GZweivektor[] verdoppele(GZweivektor[] pla) {
+	GZweivektor[] plb = new GZweivektor[pla.length];
+	for (int i = 0; i < pla.length; i++) {
+	    plb[i] = new GZweivektor(pla[i].eins, pla[i].zwei);
 	}
 
 	return plb;

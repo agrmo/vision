@@ -3,9 +3,20 @@ package druck.vektor;
 import vektor.Dreivektor;
 import vektor.Zweivektor;
 import java.util.ArrayList;
+import vektor.ganz.GZweivektor;
 
 public class Vektordrucker {
     public static String drucke(Zweivektor v) {
+	StringBuilder sb = new StringBuilder();
+	sb.append("[");
+	sb.append(v.eins);
+	sb.append(",");
+	sb.append(v.zwei);
+	sb.append("]");
+	return sb.toString();
+    }
+
+    public static String drucke(GZweivektor v) {
 	StringBuilder sb = new StringBuilder();
 	sb.append("[");
 	sb.append(v.eins);
