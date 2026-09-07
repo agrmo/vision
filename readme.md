@@ -16,4 +16,8 @@ A two dimensional vector field.
 
 ## 2d-graph
 
-A two dimensional graph.
+A two dimensional undirected graph.
+
+## 3d-graph
+
+A three dimensional undirected graph with a one-point perspective projection.
