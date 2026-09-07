@@ -1,15 +1,12 @@
-package sicht.feld.einseins;
+package sicht.zwei.feld.einseins;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Toolkit;
-import javax.swing.JFrame;
 import maler.Maler;
 import sicht.Sicht;
 import zahl.reihe.Zahlenreihe;
 import feld.einseins.Einseinsfeld;
+import bildschirm.Bildschirm;
 
-// java -cp classes sicht.feld.einseins.Main
+// java -cp classes sicht.zwei.feld.einseins.Main
 
 public class Main {
 
@@ -38,23 +35,13 @@ public class Main {
 	Einseinsfeld esf = new Einseinsfeld(eintrag, werte);
 
 	// Mache die Sicht.
-	Dimension bildschirm = Toolkit.getDefaultToolkit().getScreenSize();
-	double breite = bildschirm.getWidth();
-	double hoehe = bildschirm.getHeight();
-	Einseinsfeldsicht s = new Einseinsfeldsicht(esf, 20,
-						    breite, hoehe);
+	Einseinsfeldsicht s = new Einseinsfeldsicht(esf, 20, 1200, 600);
 	
 	// Mache den Maler.
 	Maler m = new Maler(new Sicht[] {s});
 
 	// Stelle die Daten dar.
-	JFrame frame = new JFrame();
-	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	frame.getContentPane().setBackground(Color.BLACK);
-        frame.getContentPane().setForeground(Color.WHITE);
-	frame.setSize((int) breite, (int) hoehe);
-	frame.add(m);
-	frame.setVisible(true);
+	Bildschirm.schwarz(m);
     }
     
     public static void main(String[] args) {

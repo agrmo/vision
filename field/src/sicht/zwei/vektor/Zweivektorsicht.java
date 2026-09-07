@@ -1,15 +1,16 @@
-package sicht.vektor.zwei;
+package sicht.zwei.vektor;
 
-import dreher.zweivektor.Zweivektordreher;
+import dreher.reel.vektor.zwei.RZweivektordreher;
+import fort.Fortvektor;
+import ganz.strecke.GZweistrecke;
+import ganz.vektor.GZweivektor;
 import java.awt.Graphics;
+import reel.vektor.RZweivektor;
 import sicht.Sicht;
-import vektor.Zweivektor;
-import vektor.fort.zwei.Zweifortvektor;
+import sicht.zwei.strecke.Zweistreckesicht;
 import verdoppler.vektor.Vektorverdoppler;
-import welt.vektor.Zweivektorwelt;
-import welt.strecke.zwei.Zweistreckewelt;
-import sicht.strecke.zwei.Zweistreckesicht;
-import strecke.Zweistrecke;
+import welt.zwei.strecke.Zweistreckewelt;
+import welt.zwei.vektor.Zweivektorwelt;
 
 // Stellen eine Reihe von Vektoren dar. Ein Vektor wird wie ein Pfeil
 // dargestellt.
@@ -35,7 +36,7 @@ public class Zweivektorsicht extends Sicht {
 	// Baue alle Strecken dieser Zweivektorwelt.
 	
 	int streckeanzahl = 3 * this.zweivektorwelt.vektoren.length;
-	Zweistrecke[] zsl = new Zweistrecke[streckeanzahl];
+	GZweistrecke[] zsl = new GZweistrecke[streckeanzahl];
 
 	for (int i = 0; i < this.zweivektorwelt.orte.length; i++) {
 
@@ -48,10 +49,14 @@ public class Zweivektorsicht extends Sicht {
 
 	    // Baue die zwei Spitzen.
 
-	    Zweivektor a = Zweifortvektor.mache(this.zweivektorwelt.vektoren[i], this.spitze);
-	    Zweivektor b = Zweivektordreher.drehen(a, 135.0 * (Math.PI / 180.0));
-	    Zweivektor c = Zweifortvektor.mache(this.zweivektorwelt.vektoren[i], this.spitze);
-	    Zweivektor d = Zweivektordreher.drehen(c, -135.0 * (Math.PI / 180.0));
+	    RZweivektor a = Fortvektor.mache(this.zweivektorwelt.vektoren[i], this.spitze);
+	    RZweivektor b = RZweivektordreher.drehen(a, 135.0 * (Math.PI / 180.0));
+	    RZweivektor c = Fortvektor.mache(this.zweivektorwelt.vektoren[i], this.spitze);
+	    RZweivektor d = RZweivektordreher.drehen(c, -135.0 * (Math.PI / 180.0));
+
+	    // Wir brauchen ganze Zahlen im Bildschirm.
+	    GZweivektor gb = new GZweivektor((int) b.eins, (int) b.zwei);
+	    GZweivektor gd = new GZweivektor((int) d.eins, (int) d.zwei);
 
 	    // Es gibt bis jetzt 3 Vektoren: der Schwanz und die zwei
 	    // Spitzen.  Der Schwanz ist this.zweivektorwelt.vektoren[i] und die
@@ -69,22 +74,22 @@ public class Zweivektorsicht extends Sicht {
 	    */
 	    
 	    // Nun verschiebe alle drei Vektoren zum richtigen Ort.
-
-	    Zweivektor schwanzvon = Vektorverdoppler.verdoppele(this.zweivektorwelt.orte[i]);
-	    Zweivektor schwanzbis = Vektorverdoppler.verdoppele(this.zweivektorwelt.orte[i]);
+	    
+	    GZweivektor schwanzvon = Vektorverdoppler.verdoppele(this.zweivektorwelt.orte[i]);
+	    GZweivektor schwanzbis = Vektorverdoppler.verdoppele(this.zweivektorwelt.orte[i]);
 	    schwanzbis.addiere(this.zweivektorwelt.vektoren[i]);
 
-	    Zweivektor spitzeeinsvon = Vektorverdoppler.verdoppele(schwanzbis);
-	    Zweivektor spitzeeinsbis = Vektorverdoppler.verdoppele(schwanzbis);
-	    spitzeeinsbis.addiere(b);
+	    GZweivektor spitzeeinsvon = Vektorverdoppler.verdoppele(schwanzbis);
+	    GZweivektor spitzeeinsbis = Vektorverdoppler.verdoppele(schwanzbis);
+	    spitzeeinsbis.addiere(gb);
 
-	    Zweivektor spitzezweivon = Vektorverdoppler.verdoppele(schwanzbis);
-	    Zweivektor spitzezweibis = Vektorverdoppler.verdoppele(schwanzbis);
-	    spitzezweibis.addiere(d);
+	    GZweivektor spitzezweivon = Vektorverdoppler.verdoppele(schwanzbis);
+	    GZweivektor spitzezweibis = Vektorverdoppler.verdoppele(schwanzbis);
+	    spitzezweibis.addiere(gd);
 
-	    zsl[i * 3] = new Zweistrecke(schwanzvon, schwanzbis);
-	    zsl[(i * 3) + 1] = new Zweistrecke(spitzeeinsvon, spitzeeinsbis);
-	    zsl[(i * 3) + 2] = new Zweistrecke(spitzezweivon, spitzezweibis);
+	    zsl[i * 3] = new GZweistrecke(schwanzvon, schwanzbis);
+	    zsl[(i * 3) + 1] = new GZweistrecke(spitzeeinsvon, spitzeeinsbis);
+	    zsl[(i * 3) + 2] = new GZweistrecke(spitzezweivon, spitzezweibis);
 	}
 
 	// Nun stelle alle Strecken dar. Wir benutzen eine

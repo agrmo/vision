@@ -1,11 +1,11 @@
-package sicht.feld.einseins;
+package sicht.zwei.feld.einseins;
 
+import feld.einseins.Einseinsfeld;
+import ganz.vektor.GZweivektor;
 import java.awt.Graphics;
 import sicht.Sicht;
-import feld.einseins.Einseinsfeld;
-import welt.vektor.Zweivektorwelt;
-import sicht.vektor.zwei.Zweivektorsicht;
-import vektor.Zweivektor;
+import sicht.zwei.vektor.Zweivektorsicht;
+import welt.zwei.vektor.Zweivektorwelt;
 
 // Sicht für ein 1-1-Feld.
 // Die Stellen sind eine Reihe von Zahlen.
@@ -32,14 +32,14 @@ public class Einseinsfeldsicht extends Sicht {
 
     public void darstellen(Graphics g) {
 
-	Zweivektor[] orte = new Zweivektor[this.eef.orte.length];
-	Zweivektor[] vektoren = new Zweivektor[this.eef.orte.length];
+	GZweivektor[] orte = new GZweivektor[this.eef.orte.length];
+	GZweivektor[] vektoren = new GZweivektor[this.eef.orte.length];
 	
 	for (int i = 0; i < this.eef.orte.length; i++) {
-	    orte[i] = new Zweivektor((0.5 * this.breite) + i * this.abstand,
-				     (0.5 * this.hoehe));
+	    orte[i] = new GZweivektor((int) ((0.5 * this.breite) + i * this.abstand),
+				      (int) (0.5 * this.hoehe));
 	    
-	    vektoren[i] = new Zweivektor(0, this.eef.werte[i]);
+	    vektoren[i] = new GZweivektor(0, (int) this.eef.werte[i]);
 	}
 
 	Zweivektorwelt zvw = new Zweivektorwelt(orte, vektoren);

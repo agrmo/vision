@@ -9,7 +9,7 @@
   </target>
   
   <target name="run" depends="compile">
-    <java classname="sicht.feld.einseins.Main"
+    <java classname="sicht.zwei.feld.einseins.Main"
 	  classpath="classes"
 	  fork="true"></java>
   </target>

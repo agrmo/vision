@@ -1,6 +1,6 @@
-package welt.strecke.zwei;
+package welt.zwei.strecke;
     
-import strecke.Zweistrecke;
+import ganz.strecke.GZweistrecke;
 
 //  Eine Zweistreckewelt ist eine Liste von zweidimensionalen Strecken.
 //
@@ -12,9 +12,9 @@ import strecke.Zweistrecke;
 //  Figur dar, weil er wahrscheinlich verschiedene Strecken innerhalb
 //  der Figur enthält.
 public class Zweistreckewelt {
-    public Zweistrecke[] strecken;
+    public GZweistrecke[] strecken;
 
-    public Zweistreckewelt(Zweistrecke[] zsl) {
+    public Zweistreckewelt(GZweistrecke[] zsl) {
 	this.strecken = zsl;
     }
 }

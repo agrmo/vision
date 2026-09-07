@@ -1,12 +1,12 @@
-package sicht.strecke.zwei;
+package sicht.zwei.strecke;
 
 import javax.swing.JComponent;
 import java.awt.Graphics;
-import welt.strecke.zwei.Zweistreckewelt;
-import strecke.Zweistrecke;
+import welt.zwei.strecke.Zweistreckewelt;
+import ganz.strecke.GZweistrecke;
 import sicht.Sicht;
 
-// Eine Zweistreckesicht kann Strecken darstellen.
+// Eine GZweistreckesicht kann Strecken darstellen.
 public class Zweistreckesicht extends Sicht {
 
     // Wir müssen die Welt in die Sicht einsetzen, weil Java sie
@@ -18,9 +18,9 @@ public class Zweistreckesicht extends Sicht {
     }
 
     // Stelle eine Strecke dar.
-    void darstellestrecke(Graphics g, Zweistrecke k) {
-	g.drawLine((int) k.von.eins, (int) k.von.zwei,
-		   (int) k.bis.eins, (int) k.bis.zwei);
+    void darstellestrecke(Graphics g, GZweistrecke k) {
+	g.drawLine(k.von.eins, k.von.zwei,
+		   k.bis.eins, k.bis.zwei);
     }
 
     public void darstellen(Graphics g) {

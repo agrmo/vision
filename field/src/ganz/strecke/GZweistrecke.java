@@ -1,6 +1,6 @@
-package strecke;
+package ganz.strecke;
 
-import vektor.Zweivektor;
+import ganz.vektor.GZweivektor;
 
 // Eine Zweistrecke ist ein Paar von zwei Zweivektoren.
 //
@@ -13,17 +13,17 @@ import vektor.Zweivektor;
 //
 // Die Strecken können vielleicht Kanten verkörpern. Vielleicht die
 // Kanten einer Dreiecke oder eines Quadrats.
-public class Zweistrecke {
-    public Zweivektor von;
-    public Zweivektor bis;
+public class GZweistrecke {
+    public GZweivektor von;
+    public GZweivektor bis;
     
-    public Zweistrecke(Zweivektor v, Zweivektor b) {
+    public GZweistrecke(GZweivektor v, GZweivektor b) {
 	this.von = v;
 	this.bis = b;
     }
 
-    public void addiere(Zweivektor p) {
-	this.von.addiere(p);
-	this.bis.addiere(p);
+    public void addiere(GZweivektor v) {
+	this.von.addiere(v);
+	this.bis.addiere(v);
     }
 }
