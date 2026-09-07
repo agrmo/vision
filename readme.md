@@ -20,4 +20,8 @@ A two dimensional undirected graph.
 
 ## 3d-graph
 
-A three dimensional undirected graph with a one-point perspective projection.
+A three dimensional undirected graph in a one-point perspective projection.
+
+## 3d-vector-field
+
+A three dimensional vector field in a one-point perspective projection.
