@@ -9,7 +9,7 @@
   </target>
   
   <target name="run" depends="compile">
-    <java classname="sicht.baum.binaer.Main"
+    <java classname="sicht.zwei.graph.Main"
 	  classpath="classes"
 	  fork="true"></java>
   </target>
